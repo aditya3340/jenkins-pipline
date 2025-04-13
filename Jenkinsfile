@@ -17,11 +17,11 @@ pipeline {
             steps {
                 script {
                     // Optional: Ensure kubectl is configured correctly
-                    sh 'kubectl config use-context minikube'  // Set Minikube context
+                    sh '/tmp/kubectl config use-context minikube'  // Set Minikube context
 
                     // Deploy using the correct path to your deployment.yaml
                     // Assuming `deployment.yaml` is in `kubernetes/` directory
-                    sh 'kubectl apply -f nginx-deployment.yaml'
+                    sh '/tmp/kubectl apply -f nginx-deployment.yaml'
                 }
             }
         }
