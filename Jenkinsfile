@@ -17,6 +17,7 @@ pipeline {
             steps {
                 script {
                     // Optional: Ensure kubectl is configured correctly
+                    sh 'echo /tmp/'
                     sh '/tmp/kubectl config use-context minikube'  // Set Minikube context
 
                     // Deploy using the correct path to your deployment.yaml
