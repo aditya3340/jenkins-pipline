@@ -11,8 +11,8 @@ pipeline {
         stage('Deploy to Minikube') {
             steps {
                 // Deploy your Kubernetes YAML manifests
-                sh 'kubectl apply -f nginx-deployment.yaml'
-                sh 'kubectl apply -f nginx-service.yaml'
+                sh '/tmp/kubectl apply -f nginx-deployment.yaml'
+                sh '/tmp/kubectl apply -f nginx-service.yaml'
             }
         }
     }
