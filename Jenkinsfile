@@ -30,7 +30,7 @@ pipeline {
                     // Apply deployment and service (idempotent)
                     sh '''
                         echo "Applying nginx deployment..."
-                        /kubectl-bin/kubectl apply -f nginx-deployment.yaml -n $NAMESPACE
+                        /kubectl-bin/kubectl apply -f nginx-deployment.yaml -n $NAMESPACE --force
 
                         echo "Applying nginx service..."
                         /kubectl-bin/kubectl apply -f nginx-service.yaml -n $NAMESPACE
