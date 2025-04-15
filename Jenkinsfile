@@ -18,7 +18,7 @@ pipeline {
                 script {
 
                     //create namespace
-                    sh 'kubectl create namespace app'
+                    sh '/kubectl-bin/kubectl create namespace app'
 
                     // Use kubectl from mounted path
                     sh '/kubectl-bin/kubectl apply -f nginx-deployment.yaml'
