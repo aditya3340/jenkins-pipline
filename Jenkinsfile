@@ -2,23 +2,21 @@ pipeline {
     agent any
 
     environment {
-        KUBECONFIG = "/var/jenkins_home/.kube/config" // Optional, if needed
-        NAMESPACE = "app"
+        KUBECONFIG = "/var/jenkins_home/.kube/config"  // Optional, if needed
+        NAMESPACE = "app"  // Define the namespace
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                // Checkout code from the repository
                 checkout scm
             }
         }
 
-        stage('Deploy to Minikube') {
+        stage('Deploy to Kubernetes') {
             steps {
                 script {
-
-                    // Apply deployment if it doesn't exist, or trigger a restart if it does
+                    // Check if namespace exists, create if not
                     sh '''
                         echo "Checking if namespace $NAMESPACE exists..."
                         if ! /kubectl-bin/kubectl get namespace $NAMESPACE > /dev/null 2>&1; then
@@ -28,7 +26,7 @@ pipeline {
                             echo "Namespace $NAMESPACE already exists."
                         fi
                     '''
-                    
+
                     // Apply deployment and service (idempotent)
                     sh '''
                         echo "Applying nginx deployment..."
@@ -38,7 +36,18 @@ pipeline {
                         /kubectl-bin/kubectl apply -f nginx-service.yaml -n $NAMESPACE
                     '''
 
-                    // Ensure deployment is rolled out and pods are running
+                    // If the deployment exists, restart it, otherwise apply the deployment
+                    sh '''
+                        if /kubectl-bin/kubectl get deployment nginx -n $NAMESPACE > /dev/null 2>&1; then
+                            echo "Deployment exists, restarting..."
+                            /kubectl-bin/kubectl rollout restart deployment/nginx -n $NAMESPACE
+                        else
+                            echo "Deployment does not exist, creating..."
+                            /kubectl-bin/kubectl apply -f nginx-deployment.yaml -n $NAMESPACE
+                        fi
+                    '''
+
+                    // Ensure deployment is rolled out successfully
                     sh '''
                         echo "Waiting for nginx deployment to complete..."
                         /kubectl-bin/kubectl rollout status deployment/nginx -n $NAMESPACE --timeout=5m
@@ -67,7 +76,7 @@ pipeline {
                 script {
                     // Verify that the deployment is working as expected
                     sh '/kubectl-bin/kubectl get pods -n $NAMESPACE'
-                    
+
                     // Port forwarding or any other verification method
                     sh '/kubectl-bin/kubectl port-forward svc/nginx -n $NAMESPACE 8080:80'
                 }
