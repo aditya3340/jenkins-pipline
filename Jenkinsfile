@@ -18,7 +18,13 @@ pipeline {
                 script {
 
                     //create namespace
-                    sh '/kubectl-bin/kubectl create namespace app'
+                    sh '''
+                          if ! /kubectl-bin/kubectl get namespace app > /dev/null 2>&1; then
+                            /kubectl-bin/kubectl create namespace app
+                          else
+                            echo "Namespace 'app' already exists."
+                          fi
+                        '''
 
                     // Use kubectl from mounted path
                     sh '/kubectl-bin/kubectl apply -f nginx-deployment.yaml'
