@@ -77,8 +77,6 @@ pipeline {
                     // Verify that the deployment is working as expected
                     sh '/kubectl-bin/kubectl get pods -n $NAMESPACE'
 
-                    // Port forwarding or any other verification method
-                    sh '/kubectl-bin/kubectl port-forward svc/nginx -n $NAMESPACE 80:80'
                 }
             }
         }
