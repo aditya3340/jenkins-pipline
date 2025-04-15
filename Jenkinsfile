@@ -16,6 +16,10 @@ pipeline {
         stage('Deploy to Minikube') {
             steps {
                 script {
+
+                    //create namespace
+                    sh 'kubectl create namespace app'
+
                     // Use kubectl from mounted path
                     sh '/kubectl-bin/kubectl apply -f nginx-deployment.yaml'
                     sh '/kubectl-bin/kubectl apply -f nginx-service.yaml'
