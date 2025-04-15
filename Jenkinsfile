@@ -78,7 +78,7 @@ pipeline {
                     sh '/kubectl-bin/kubectl get pods -n $NAMESPACE'
 
                     // Port forwarding or any other verification method
-                    sh '/kubectl-bin/kubectl port-forward svc/nginx -n $NAMESPACE 8080:80'
+                    sh '/kubectl-bin/kubectl port-forward svc/nginx -n $NAMESPACE 80:80'
                 }
             }
         }
