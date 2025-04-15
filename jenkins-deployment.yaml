@@ -18,6 +18,25 @@ spec:
       labels:
         app: jenkins-deployment
     spec:
+      initContainers:
+      - name: install-kubectl
+        image: curlimages/curl:latest
+        command:
+          - sh
+          - -c
+          - |
+            echo "Downloading kubectl..." && \
+            curl -LO https://dl.k8s.io/release/v1.29.0/bin/linux/amd64/kubectl && \
+            ls -l && \
+            chmod +x kubectl && \
+            echo "Moving kubectl to volume..." && \
+            mv kubectl /kubectl-volume/kubectl && \
+            ls -l /kubectl-volume && \
+            echo "Done"
+        volumeMounts:
+          - name: kubectl-bin
+            mountPath: /kubectl-volume
+
       containers:
       - image: jenkins/jenkins:lts
         name: jenkins
@@ -27,7 +46,11 @@ spec:
         volumeMounts:
         - name: jenkins-volume
           mountPath: /var/jenkins_home
+        - name: kubectl-bin
+          mountPath: /kubectl-bin
       volumes:
       - name: jenkins-volume
         persistentVolumeClaim:
           claimName: jenkins-pvc
+      - name: kubectl-bin
+        emptyDir: {}

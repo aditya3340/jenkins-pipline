@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        KUBECONFIG = "/tmp/kubeconfig"  // Optional: Use if your kubeconfig is in a different path
+        KUBECONFIG = "/var/jenkins_home/.kube/config" // Optional, if needed
     }
 
     stages {
@@ -16,12 +16,8 @@ pipeline {
         stage('Deploy to Minikube') {
             steps {
                 script {
-                    // Optional: Ensure kubectl is configured correctly
-                    sh '/tmp/kubectl config use-context minikube'  // Set Minikube context
-
-                    // Deploy using the correct path to your deployment.yaml
-                    // Assuming `deployment.yaml` is in `kubernetes/` directory
-                    sh '/tmp/kubectl apply -f nginx-deployment.yaml'
+                    // Use kubectl from mounted path
+                    sh '/kubectl-bin/kubectl apply -f nginx-deployment.yaml'
                 }
             }
         }
@@ -29,8 +25,8 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 script {
-                    // Check that the pods are running in Minikube
-                    sh 'kubectl get pods --all-namespaces'
+                    // Use kubectl from mounted path again to verify
+                    sh '/kubectl-bin/kubectl get pods -n jenkins'
                 }
             }
         }
