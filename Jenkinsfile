@@ -57,8 +57,8 @@ pipeline {
                     sh '''
                         echo "Waiting for nginx pod to be ready..."
                         for i in {1..30}; do
-                            READY=$(kubectl get pods -n $NAMESPACE -l app=nginx -o jsonpath="{.items[0].status.containerStatuses[0].ready}")
-                            STATUS=$(kubectl get pods -n $NAMESPACE -l app=nginx -o jsonpath="{.items[0].status.phase}")
+                            READY=$(/kubectl-bin/kubectl get pods -n $NAMESPACE -l app=nginx -o jsonpath="{.items[0].status.containerStatuses[0].ready}")
+                            STATUS=$(kubectl-bin/kubectl get pods -n $NAMESPACE -l app=nginx -o jsonpath="{.items[0].status.phase}")
                             if [ "$READY" == "true" ] && [ "$STATUS" == "Running" ]; then
                                 echo "Pod is ready!"
                                 break
