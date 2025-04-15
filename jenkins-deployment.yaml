@@ -18,6 +18,7 @@ spec:
       labels:
         app: jenkins-deployment
     spec:
+      serviceAccountName: jenkins-sa
       initContainers:
       - name: install-kubectl
         image: curlimages/curl:latest

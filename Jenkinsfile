@@ -18,6 +18,7 @@ pipeline {
                 script {
                     // Use kubectl from mounted path
                     sh '/kubectl-bin/kubectl apply -f nginx-deployment.yaml'
+                    sh '/kubectl-bin/kubectl apply -f nginx-service.yaml'
                 }
             }
         }
@@ -26,7 +27,7 @@ pipeline {
             steps {
                 script {
                     // Use kubectl from mounted path again to verify
-                    sh '/kubectl-bin/kubectl get pods -n jenkins'
+                    sh '/kubectl-bin/kubectl get pods -n app'
                 }
             }
         }
