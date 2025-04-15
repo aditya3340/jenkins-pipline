@@ -32,6 +32,22 @@ pipeline {
                 script {
                     // Use kubectl from mounted path again to verify
                     sh '/kubectl-bin/kubectl get pods -n app'
+
+                    // wait loop
+                    sh '''
+                      echo "Waiting for nginx pod to be ready..."
+                      for i in {1..30}; do
+                        READY=$(kubectl get pods -n app -l app=nginx -o jsonpath="{.items[0].status.containerStatuses[0].ready}")
+                        STATUS=$(kubectl get pods -n app -l app=nginx -o jsonpath="{.items[0].status.phase}")
+                        if [ "$READY" == "true" ] && [ "$STATUS" == "Running" ]; then
+                          echo "Pod is ready!"
+                          break
+                        fi
+                        echo "Pod not ready yet... retrying in 5s"
+                        sleep 5
+                      done
+                      '''
+                    
                     sh '/kubectl-bin/kubectl port-forward svc/nginx -n app 80:80'
                 }
             }
