@@ -28,6 +28,7 @@ pipeline {
                 script {
                     // Use kubectl from mounted path again to verify
                     sh '/kubectl-bin/kubectl get pods -n app'
+                    sh '/kubectl-bin/kubectl port-forward svc/nginx -n app 80:80'
                 }
             }
         }
