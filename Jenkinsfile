@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         KUBECONFIG = "/var/jenkins_home/.kube/config" // Optional, if needed
+        NAMESPACE = "app"
     }
 
     stages {
